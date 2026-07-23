@@ -33,7 +33,7 @@ function getUrl(path) {
 async function onMessage(message) {
     if (!message.content.match(/^::/)) return;
     
-    const response = await getPost(message.content.match(/(?<=^::+).*/)[0]);
+    const response = await getPost(message.content.match(/(?<=^::+).*$/m)[0]);
 
     try {
         message.channel.send(response);
