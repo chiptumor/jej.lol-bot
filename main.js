@@ -23,11 +23,11 @@ const client = new Discord.Client({ intents: [
     Discord.GatewayIntentBits.MessageContent
 ]});
 
-client.on(Discord.Events.InteractionCreate, function (interaction) {
+client.on(Discord.Events.InteractionCreate, function onCommand(interaction) {
     getPost(interaction.options.getString("query"))
         .then(response => interaction.reply(response));
 });
-client.on(Discord.Events.MessageCreate, function (message) {
+client.on(Discord.Events.MessageCreate, function onMessage(message) {
     if (!message.content.match(/^::/m)) return;
 
     getPost(message.content.match(/^::+(.*)/m)[1])
