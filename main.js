@@ -27,7 +27,7 @@ client.on(Discord.Events.InteractionCreate, function (interaction) {
     getPost(interaction.options.getString("query"))
         .then(response => interaction.reply(response));
 });
-client.on(Discord.Events.MessageCreate, function () {
+client.on(Discord.Events.MessageCreate, function (message) {
     if (!message.content.match(/^::/)) return;
 
     getPost(message.content.match(/(?<=^::+).*$/m)[0])
