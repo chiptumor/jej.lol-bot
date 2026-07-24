@@ -24,7 +24,7 @@ const client = new Discord.Client({ intents: [
 ]});
 
 client.on(Discord.Events.InteractionCreate, function (interaction) {
-    getPost(interaction.options.getString("query"));
+    getPost(interaction.options.getString("query"))
         .then(response => interaction.reply(response));
 });
 client.on(Discord.Events.MessageCreate, function () {
