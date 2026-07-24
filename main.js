@@ -25,14 +25,14 @@ const client = new Discord.Client({ intents: [
 
 client.on(Discord.Events.InteractionCreate, function onCommand(interaction) {
     getPost(interaction.options.getString("query"))
-        .then(response => interaction.reply(response));
+    .then(response => interaction.reply(response));
 });
 client.on(Discord.Events.MessageCreate, function onMessage(message) {
     if (!message.content.match(/^::/m)) return;
 
     getPost(message.content.match(/^::+(.*)/m)[1])
-        .then(response => message.channel.send(response))
-        .catch(() => console.info("couldn't reply:", message.channelId));
+    .then(response => message.channel.send(response))
+    .catch(() => console.info("couldn't reply:", message.channelId));
 });
 
 function getUrl(path) {
