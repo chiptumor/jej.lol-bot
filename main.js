@@ -23,56 +23,55 @@ const client = new Discord.Client({ intents: [
     Discord.GatewayIntentBits.MessageContent
 ]});
 
-client.on(Discord.Events.InteractionCreate, onCommand);
-client.on(Discord.Events.MessageCreate, onMessage);
+client.on(Discord.Events.InteractionCreate, function (interaction) {
+    getPost(interaction.options.getString("query"));
+        .then(response => interaction.reply(response));
+});
+client.on(Discord.Events.MessageCreate, function () {
+    if (!message.content.match(/^::/)) return;
+
+    getPost(message.content.match(/(?<=^::+).*$/m)[0])
+        .then(response => message.channel.send(response))
+        .catch(() => console.info("couldn't reply:", message.channelId));
+});
 
 function getUrl(path) {
     return API_URL + path;
 }
 
-async function onMessage(message) {
-    if (!message.content.match(/^::/)) return;
-    
-    const response = await getPost(message.content.match(/(?<=^::+).*$/m)[0]);
-
-    try {
-        message.channel.send(response);
-    } catch (error) {
-        console.info("couldn't reply:", message.channelId);
-    }
-}
-
-async function onCommand(interaction) {
-    const response = await getPost(interaction.options.getString("query"));
-    interaction.reply(response);
-}
-
 async function getPost(search) {
-    // modify query
-
-    const query = !search
-        ? "id:0.."
-        : search
-            .split(" ")
-            .map(tag => {
-                // dont replace negate tokens
-                /* if a negate token has "gle" the search would appear bugged *
-                 * e.g. "-jingle" --> "-jin glegle"                           *
-                 * e.g. "-gleep" --> "- glegle ep"                            */
-                if (tag[0] === "-") return tag;
-                return tag.replace(/(gle)+/g, " glegle ");
-            })
-            .join(" ");
-
-    // return content
+    const query = finalizeQuery(search);
 
     const post = await fetch(getUrl("/api/random-post?q=" + query))
         .then(r => r.json());
-        
-    if (post.url === "") {
+
+    if (post.url === "")
         return "no image found";
-    }
+    if (!post.contentUrl)
+        return `unknown error (${ JSON.stringify(post) })`;
+
     return getUrl(post.contentUrl);
+}
+
+function finalizeQuery(query) {
+    if (!query) return "id:0..";
+
+    let final = query;
+
+    // glegle
+    final = final
+        .split(" ")
+        .map(tag => {
+            // dont replace negate tokens
+            /* if a negate token has "gle" the search would appear bugged *
+             * e.g. "-jingle" --> "-jin glegle"                           *
+             * e.g. "-gleep" --> "- glegle ep"                            */
+            if (tag[0] === "-") return tag;
+            return tag.replace(/(gle)+/g, " glegle ");
+        })
+        .join(" ");
+    
+    return final;
 }
 
 client.login(process.env.TOKEN);
