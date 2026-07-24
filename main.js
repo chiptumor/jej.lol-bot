@@ -28,9 +28,9 @@ client.on(Discord.Events.InteractionCreate, function (interaction) {
         .then(response => interaction.reply(response));
 });
 client.on(Discord.Events.MessageCreate, function (message) {
-    if (!message.content.match(/^::/)) return;
+    if (!message.content.match(/^::/m)) return;
 
-    getPost(message.content.match(/(?<=^::+).*$/m)[0])
+    getPost(message.content.replace(/^::+/m, ""))
         .then(response => message.channel.send(response))
         .catch(() => console.info("couldn't reply:", message.channelId));
 });
