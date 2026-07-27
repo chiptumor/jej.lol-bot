@@ -58,18 +58,23 @@ function finalizeQuery(query) {
 
     let final = query;
 
-    // glegle
-    final = final
-        .split(" ")
-        .map(tag => {
+    [ // array of functions to run for each tag
+        // glegle
+        tag =>
             // dont replace negate tokens
             /* if a negate token has "gle" the search would appear bugged *
              * e.g. "-jingle" --> "-jin glegle"                           *
              * e.g. "-gleep" --> "- glegle ep"                            */
-            if (tag[0] === "-") return tag;
-            return tag.replace(/(gle)+/g, " glegle ");
-        })
-        .join(" ");
+            tag[0] === "-"
+                ? tag
+                : tag.replace(/(gle)+/g, " glegle ")
+    ]
+    .forEach(
+        func => final = final
+            .split(" ")
+            .map(func)
+            .join(" ")
+    );
     
     return final;
 }
