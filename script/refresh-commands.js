@@ -30,6 +30,20 @@ const commands = [
         name: "gle",
         description: "Display a gle post from jej.lol",
         ...booruCommandConfig
+    },
+
+    {
+        name: "refresh-commands",
+        description: "refresh-commands",
+        type: Discord.ApplicationCommandType.ChatInput,
+        integration_types: [
+            Discord.ApplicationIntegrationType.UserInstall,
+            Discord.ApplicationIntegrationType.GuildInstall
+        ],
+        contexts: [
+            Discord.InteractionContextType.Guild,
+            Discord.InteractionContextType.PrivateChannel
+        ]
     }
 ];
 
