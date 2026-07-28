@@ -20,7 +20,7 @@ export const commands = {
     "refresh-commands"(interaction) {
         if (interaction.user.id === adminId) {
             interaction.reply("refreshing commands");
-            import("../script/command.js");
+            import("../script/refresh-commands.js");
         } else {
             interaction.reply("lole")
         }
