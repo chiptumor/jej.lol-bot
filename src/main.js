@@ -11,6 +11,7 @@
 import * as Discord from "discord.js";
 import * as Dotenv from "dotenv";
 import { getPost } from "./get-post.js";
+import { commands } from "./commands.js";
 
 Dotenv.config();
 
@@ -25,8 +26,7 @@ const client = new Discord.Client({ intents: [
 ]});
 
 client.on(Discord.Events.InteractionCreate, function onCommand(interaction) {
-    getPost(interaction.options.getString("query"))
-    .then(response => interaction.reply(response));
+    commands[interaction.commandName](interaction);
 });
 client.on(Discord.Events.MessageCreate, function onMessage(message) {
     if (!message.content.match(/^::/m)) return;
