@@ -13,7 +13,7 @@ export const commands = {
     },
     
     gle(interaction) {
-        getPost("gle " + interaction.options.getString("query"))
+        getPost("gle " + (interaction.options.getString("query") ?? ""))
         .then(response => interaction.reply(response));
     },
 
