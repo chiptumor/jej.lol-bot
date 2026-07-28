@@ -15,8 +15,6 @@ import { commands } from "./commands.js";
 
 Dotenv.config();
 
-const API_URL = "https://jej.lol";
-
 // client
 
 const client = new Discord.Client({ intents: [

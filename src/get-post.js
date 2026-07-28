@@ -1,3 +1,5 @@
+const API_URL = "https://jej.lol";
+
 function getUrl(path) {
     return API_URL + path;
 }
