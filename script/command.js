@@ -3,12 +3,7 @@ import * as Discord from "discord.js";
 
 Dotenv.config();
 
-const rest = new Discord.REST().setToken(process.env.TOKEN);
-
-rest.put(Discord.Routes.applicationCommands(process.env.ID), { body: [] })
-.then(() => rest.put(Discord.Routes.applicationCommands(process.env.ID), { body: [{
-    name: "booru",
-    description: "Display a post from jej.lol",
+const booruCommandConfig = {
     options: [{
         name: "query",
         description: "Search query",
@@ -23,5 +18,23 @@ rest.put(Discord.Routes.applicationCommands(process.env.ID), { body: [] })
         Discord.InteractionContextType.Guild,
         Discord.InteractionContextType.PrivateChannel
     ]
-}]}))
+}
+
+const commands = [
+    {
+        name: "booru",
+        description: "Display a post from jej.lol",
+        ...booruCommandConfig
+    },
+    {
+        name: "gle",
+        description: "Display a gle post from jej.lol",
+        ...booruCommandConfig
+    }
+];
+
+const rest = new Discord.REST().setToken(process.env.TOKEN);
+
+rest.put(Discord.Routes.applicationCommands(process.env.ID), { body: [] })
+.then(() => rest.put(Discord.Routes.applicationCommands(process.env.ID), { body: commands }))
 .catch(console.error);

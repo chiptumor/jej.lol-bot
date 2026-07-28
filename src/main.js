@@ -10,6 +10,7 @@
 
 import * as Discord from "discord.js";
 import * as Dotenv from "dotenv";
+import { getPost } from "./get-post.js";
 
 Dotenv.config();
 
@@ -34,49 +35,5 @@ client.on(Discord.Events.MessageCreate, function onMessage(message) {
     .then(response => message.channel.send(response))
     .catch(() => console.info("couldn't reply:", message.channelId));
 });
-
-function getUrl(path) {
-    return API_URL + path;
-}
-
-async function getPost(search) {
-    const query = finalizeQuery(search);
-
-    const post = await fetch(getUrl("/api/random-post?q=" + query))
-        .then(r => r.json());
-
-    if (post.url === "")
-        return "no image found";
-    if (!post.contentUrl)
-        return `unknown error (${ JSON.stringify(post) })`;
-
-    return getUrl(post.contentUrl);
-}
-
-function finalizeQuery(query) {
-    if (!query) return "id:0..";
-
-    let final = query;
-
-    [ // array of functions to run for each tag
-        // glegle
-        tag =>
-            // dont replace negate tokens
-            /* if a negate token has "gle" the search would appear bugged *
-             * e.g. "-jingle" --> "-jin glegle"                           *
-             * e.g. "-gleep" --> "- glegle ep"                            */
-            tag[0] === "-"
-                ? tag
-                : tag.replace(/(gle)+/g, " glegle ")
-    ]
-    .forEach(
-        func => final = final
-            .split(" ")
-            .map(func)
-            .join(" ")
-    );
-    
-    return final;
-}
 
 client.login(process.env.TOKEN);
